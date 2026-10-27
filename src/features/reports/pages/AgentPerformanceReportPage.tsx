@@ -228,19 +228,19 @@ export const AgentPerformanceReportPage: React.FC = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full min-w-[850px] text-left border-collapse text-xs whitespace-nowrap">
               <thead>
                 <tr className="border-b border-slate-100 text-slate-400 font-semibold text-[11px]">
-                  <th className="py-2 w-6">#</th>
-                  <th className="py-2">Agent Name</th>
-                  <th className="py-2">Total Calls</th>
-                  <th className="py-2">Answered</th>
-                  <th className="py-2">Missed</th>
-                  <th className="py-2">Avg Talk Time</th>
-                  <th className="py-2">Conversion</th>
-                  <th className="py-2">Productivity</th>
-                  <th className="py-2">Status</th>
-                  <th className="py-2 text-center">Action</th>
+                  <th className="py-2.5 px-2 w-6">#</th>
+                  <th className="py-2.5 px-2">Agent Name</th>
+                  <th className="py-2.5 px-2">Total Calls</th>
+                  <th className="py-2.5 px-2">Answered</th>
+                  <th className="py-2.5 px-2">Missed</th>
+                  <th className="py-2.5 px-2">Avg Talk Time</th>
+                  <th className="py-2.5 px-2">Conversion</th>
+                  <th className="py-2.5 px-2">Productivity</th>
+                  <th className="py-2.5 px-2">Status</th>
+                  <th className="py-2.5 px-2 text-center">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-700">
@@ -254,28 +254,28 @@ export const AgentPerformanceReportPage: React.FC = () => {
                   <tr
                     key={a.id}
                     onClick={() => setSelectedAgent(a.name)}
-                    className="hover:bg-slate-50 cursor-pointer"
+                    className="hover:bg-slate-50 cursor-pointer transition-colors"
                   >
-                    <td className="py-2 text-slate-400 font-mono text-[11px]">{a.id}</td>
-                    <td className="py-2">
+                    <td className="py-2.5 px-2 text-slate-400 font-mono text-[11px]">{a.id}</td>
+                    <td className="py-2.5 px-2">
                       <div className="flex items-center gap-1.5">
                         <img src={a.avatar} alt={a.name} className="w-5 h-5 rounded-full object-cover" />
                         <span className="font-semibold text-slate-900">{a.name}</span>
                       </div>
                     </td>
-                    <td className="py-2 font-semibold text-slate-900">{a.calls}</td>
-                    <td className="py-2 text-[#13AB4A]">{a.ans}</td>
-                    <td className="py-2 text-[#E73647]">{a.mis}</td>
-                    <td className="py-2">{a.time}</td>
-                    <td className="py-2 font-bold text-slate-900">{a.conv}</td>
-                    <td className="py-2 font-bold text-[#13AB4A]">{a.prod}</td>
-                    <td className="py-2">
+                    <td className="py-2.5 px-2 font-semibold text-slate-900">{a.calls}</td>
+                    <td className="py-2.5 px-2 text-[#13AB4A] font-medium">{a.ans}</td>
+                    <td className="py-2.5 px-2 text-[#E73647] font-medium">{a.mis}</td>
+                    <td className="py-2.5 px-2 text-slate-600">{a.time}</td>
+                    <td className="py-2.5 px-2 font-bold text-slate-900">{a.conv}</td>
+                    <td className="py-2.5 px-2 font-bold text-[#13AB4A]">{a.prod}</td>
+                    <td className="py-2.5 px-2">
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#E9F9EE] text-[#13AB4A]">
                         {a.status}
                       </span>
                     </td>
-                    <td className="py-2 text-center">
-                      <button className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-[#0362FA] rounded text-[10px] font-semibold hover:bg-blue-100">
+                    <td className="py-2.5 px-2 text-center">
+                      <button className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-[#0362FA] rounded text-[10px] font-semibold hover:bg-blue-100 transition-colors">
                         <Eye className="w-3 h-3" />
                         <span>View</span>
                       </button>

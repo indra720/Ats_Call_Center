@@ -11,10 +11,16 @@ import {
   Filter,
   CheckCircle2,
   Clock,
+  FileText,
+  Sliders,
+  Trash2,
+  Edit2,
 } from 'lucide-react';
 import { StatCard } from '@/components/common/StatCard';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { AddUserModal } from '@/features/settings/components/AddUserModal';
+import { ActionMenu } from '@/components/common/ActionMenu';
+import { toast } from '@/store/toastStore';
 import { cn } from '@/lib/utils';
 
 export const TeamAgentsPage: React.FC = () => {
@@ -261,9 +267,43 @@ export const TeamAgentsPage: React.FC = () => {
                     </span>
                   </td>
                   <td className="px-3 py-2.5 text-center">
-                    <button className="p-1 text-slate-400 hover:text-slate-700 rounded-md">
-                      <MoreVertical className="w-3.5 h-3.5" />
-                    </button>
+                    <ActionMenu
+                      items={[
+                        {
+                          label: 'View Agent Performance',
+                          icon: Award,
+                          onClick: () => {
+                            toast.info('Agent Stats', `Reviewing performance metrics for ${ag.name}`);
+                          },
+                        },
+                        {
+                          label: 'Edit Skills & Trunks',
+                          icon: Sliders,
+                          onClick: () => {
+                            toast.success('Configuration Ready', `Editing skill groups for ${ag.name}`);
+                          },
+                        },
+                        {
+                          label: 'Force Wrap-Up Status',
+                          icon: Clock,
+                          onClick: () => {
+                            setAgents((prev) =>
+                              prev.map((a) => (a.id === ag.id ? { ...a, status: 'Wrap Up' } : a))
+                            );
+                            toast.warning('Status Changed', `${ag.name} set to Wrap Up.`);
+                          },
+                        },
+                        {
+                          label: 'Deactivate Agent',
+                          icon: Trash2,
+                          danger: true,
+                          onClick: () => {
+                            setAgents((prev) => prev.filter((a) => a.id !== ag.id));
+                            toast.error('Agent Deactivated', `${ag.name} was removed from the active shift.`);
+                          },
+                        },
+                      ]}
+                    />
                   </td>
                 </tr>
               ))}

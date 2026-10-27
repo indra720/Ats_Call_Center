@@ -24,7 +24,12 @@ import {
   ArrowUpRight,
   X,
   Copy,
+  Share2,
+  FileText,
+  Trash2,
 } from 'lucide-react';
+import { ActionMenu } from '@/components/common/ActionMenu';
+import { toast } from '@/store/toastStore';
 
 interface RecordingItem {
   id: number;
@@ -206,7 +211,7 @@ export const CallRecordingsPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-6 border-b border-slate-200 text-xs font-semibold text-slate-600">
+      <div className="flex items-center gap-6 border-b border-slate-200 text-xs font-semibold text-slate-600 overflow-x-auto scrollbar-none whitespace-nowrap">
         {[
           { key: 'all', label: 'All Recordings (2,845)' },
           { key: 'inbound', label: 'Inbound (1,524)' },
@@ -289,23 +294,23 @@ export const CallRecordingsPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Table Area */}
         <div className="lg:col-span-7 xl:col-span-8 bg-white rounded-xl border border-[#E5EBF2] shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+          <div className="overflow-x-auto" role="region" aria-label="Call Recordings Table" tabIndex={0}>
+            <table className="w-full min-w-[1000px] text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#F8FAFC] text-slate-500 font-semibold border-b border-[#E5EBF2]">
-                  <th className="py-2.5 px-3 w-8">
+                <tr className="bg-[#F8FAFC] text-slate-500 font-semibold border-b border-[#E5EBF2] whitespace-nowrap">
+                  <th className="py-3 px-3 w-8">
                     <input type="checkbox" className="rounded border-slate-300 text-[#0362FA] focus:ring-0" />
                   </th>
-                  <th className="py-2.5 px-2 w-7 text-slate-400">#</th>
-                  <th className="py-2.5 px-3">Contact Name</th>
-                  <th className="py-2.5 px-3">Phone Number</th>
-                  <th className="py-2.5 px-3">Type</th>
-                  <th className="py-2.5 px-3">Duration</th>
-                  <th className="py-2.5 px-3">Call Time ↓</th>
-                  <th className="py-2.5 px-3">Status</th>
-                  <th className="py-2.5 px-3">Agent</th>
-                  <th className="py-2.5 px-3 text-center">Recording</th>
-                  <th className="py-2.5 px-3 text-center">Actions</th>
+                  <th className="py-3 px-2 w-7 text-slate-400">#</th>
+                  <th className="py-3 px-3.5">Contact Name</th>
+                  <th className="py-3 px-3.5">Phone Number</th>
+                  <th className="py-3 px-3.5">Type</th>
+                  <th className="py-3 px-3.5">Duration</th>
+                  <th className="py-3 px-3.5">Call Time ↓</th>
+                  <th className="py-3 px-3.5">Status</th>
+                  <th className="py-3 px-3.5">Agent</th>
+                  <th className="py-3 px-3.5 text-center">Recording</th>
+                  <th className="py-3 px-3.5 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -319,71 +324,115 @@ export const CallRecordingsPage: React.FC = () => {
                         isSelected ? 'bg-blue-50/50' : ''
                       }`}
                     >
-                      <td className="py-2 px-3" onClick={(e) => e.stopPropagation()}>
+                      <td className="py-3 px-3 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                         <input type="checkbox" className="rounded border-slate-300 text-[#0362FA] focus:ring-0" />
                       </td>
-                      <td className="py-2 px-2 text-slate-400 font-mono text-[11px]">{item.id}</td>
-                      <td className="py-2 px-3">
-                        <div className="flex items-center gap-2">
+                      <td className="py-3 px-2 text-slate-400 font-mono text-[11px] whitespace-nowrap">{item.id}</td>
+                      <td className="py-3 px-3.5 whitespace-nowrap">
+                        <div className="flex items-center gap-2.5">
                           <div
-                            className={`w-7 h-7 rounded-full ${item.initialsBg} text-white font-bold text-[11px] flex items-center justify-center shrink-0 shadow-xs`}
+                            className={`w-8 h-8 rounded-full ${item.initialsBg} text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs`}
                           >
                             {item.initials}
                           </div>
                           <div className="min-w-0">
-                            <div className="font-semibold text-slate-900 truncate">{item.name}</div>
-                            <div className="text-[11px] text-slate-400 truncate">{item.company}</div>
+                            <div className="font-semibold text-slate-900 leading-tight whitespace-nowrap">{item.name}</div>
+                            <div className="text-[11px] text-slate-400 leading-tight mt-0.5 whitespace-nowrap">{item.company}</div>
                           </div>
                         </div>
                       </td>
-                      <td className="py-2 px-3 font-mono text-[#0362FA] font-medium">{item.phone}</td>
-                      <td className="py-2 px-3">
-                        {item.type === 'Inbound' && <PhoneIncoming className="w-3.5 h-3.5 text-[#13AB4A]" />}
-                        {item.type === 'Outbound' && <PhoneOutgoing className="w-3.5 h-3.5 text-[#0362FA]" />}
-                        {item.type === 'Missed' && <PhoneMissed className="w-3.5 h-3.5 text-[#E73647]" />}
+                      <td className="py-3 px-3.5 font-mono text-[#0362FA] font-semibold whitespace-nowrap">{item.phone}</td>
+                      <td className="py-3 px-3.5 whitespace-nowrap">
+                        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-50 border border-slate-200 text-slate-700">
+                          {item.type === 'Inbound' && <PhoneIncoming className="w-3.5 h-3.5 text-[#13AB4A]" />}
+                          {item.type === 'Outbound' && <PhoneOutgoing className="w-3.5 h-3.5 text-[#0362FA]" />}
+                          {item.type === 'Missed' && <PhoneMissed className="w-3.5 h-3.5 text-[#E73647]" />}
+                          <span>{item.type}</span>
+                        </div>
                       </td>
-                      <td className="py-2 px-3 font-mono text-slate-600">{item.duration}</td>
-                      <td className="py-2 px-3">
-                        <div className="text-slate-700">{item.callDate}</div>
-                        <div className="text-[11px] text-slate-400">{item.callTime}</div>
+                      <td className="py-3 px-3.5 font-mono text-slate-700 font-medium whitespace-nowrap">{item.duration}</td>
+                      <td className="py-3 px-3.5 whitespace-nowrap">
+                        <div className="text-slate-800 font-semibold leading-tight whitespace-nowrap">{item.callDate}</div>
+                        <div className="text-[11px] text-slate-400 leading-tight mt-0.5 whitespace-nowrap">{item.callTime}</div>
                       </td>
-                      <td className="py-2 px-3">
+                      <td className="py-3 px-3.5 whitespace-nowrap">
                         {item.status === 'Answered' ? (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#E9F9EE] text-[#13AB4A] border border-emerald-200">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#E9F9EE] text-[#13AB4A] border border-emerald-200">
                             Answered
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#FEECEE] text-[#E73647] border border-rose-200">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#FEECEE] text-[#E73647] border border-rose-200">
                             Missed
                           </span>
                         )}
                       </td>
-                      <td className="py-2 px-3">
-                        <div className="flex items-center gap-1.5">
-                          <img src={item.agentAvatar} alt={item.agent} className="w-5 h-5 rounded-full object-cover" />
-                          <span className="text-slate-800 truncate">{item.agent}</span>
+                      <td className="py-3 px-3.5 whitespace-nowrap">
+                        <div className="flex items-center gap-2 whitespace-nowrap">
+                          <img src={item.agentAvatar} alt={item.agent} className="w-6 h-6 rounded-full object-cover shrink-0" />
+                          <span className="text-slate-800 font-medium text-xs whitespace-nowrap">{item.agent}</span>
                         </div>
                       </td>
-                      <td className="py-2 px-3 text-center">
+                      <td className="py-3 px-3.5 text-center whitespace-nowrap">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedItem(item);
                             setIsPlaying(!isPlaying);
                           }}
-                          className="p-1 rounded-full text-[#0362FA] hover:bg-blue-50"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-[#0362FA] hover:bg-blue-100 text-xs font-semibold whitespace-nowrap transition-colors"
                         >
-                          <Play className="w-4 h-4 fill-current" />
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>Play</span>
                         </button>
                       </td>
-                      <td className="py-2 px-3 text-center">
+                      <td className="py-3 px-3.5 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center gap-1.5">
-                          <button className="p-1 text-slate-400 hover:text-slate-700">
+                          <button
+                            onClick={() => {
+                              toast.success('MP3 Download Started', `Downloading recording for ${rec.name} (${rec.duration})`);
+                            }}
+                            title="Download Recording"
+                            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+                          >
                             <Download className="w-3.5 h-3.5" />
                           </button>
-                          <button className="p-1 text-slate-400 hover:text-slate-700">
-                            <MoreHorizontal className="w-3.5 h-3.5" />
-                          </button>
+                          <ActionMenu
+                            items={[
+                              {
+                                label: 'Open Player & Waveform',
+                                icon: Play,
+                                onClick: () => {
+                                  setSelectedRec(rec);
+                                  setIsPlaying(true);
+                                  toast.info('Audio Loaded', `Now playing recording for ${rec.name}`);
+                                },
+                              },
+                              {
+                                label: 'Copy Shareable Link',
+                                icon: Copy,
+                                onClick: () => {
+                                  navigator.clipboard.writeText(`https://app.atscallcenter.in/calls/recordings/${rec.id}`);
+                                  toast.success('Link Copied', 'Encrypted sharing link copied to clipboard.');
+                                },
+                              },
+                              {
+                                label: 'View AI Transcript',
+                                icon: FileText,
+                                onClick: () => {
+                                  setSelectedRec(rec);
+                                  toast.info('Transcript Opened', `Showing speaker transcription for ${rec.name}`);
+                                },
+                              },
+                              {
+                                label: 'Delete Recording',
+                                icon: Trash2,
+                                danger: true,
+                                onClick: () => {
+                                  toast.warning('Recording Archived', `Recording #${rec.id} moved to compliance archive.`);
+                                },
+                              },
+                            ]}
+                          />
                         </div>
                       </td>
                     </tr>

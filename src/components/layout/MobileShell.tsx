@@ -50,8 +50,8 @@ export const MobileShell: React.FC<{ children: React.ReactNode }> = ({ children 
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F6FAFD] text-slate-800 font-sans">
-      {/* 1. Clean Mobile Top App Bar (No bottom app bar) */}
-      <header className="sticky top-0 z-40 bg-white border-b border-[#E5EBF2] px-3.5 py-2.5 safe-top flex items-center justify-between shadow-2xs">
+      {/* 1. Clean Mobile Top App Bar (Height increased to 64px and items perfectly centered) */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E5EBF2] px-3.5 sm:px-4 h-16 min-h-[64px] flex items-center justify-between shadow-2xs">
         <div className="flex items-center gap-2.5">
           {/* Hamburger button to open navigation drawer */}
           <button
@@ -62,7 +62,7 @@ export const MobileShell: React.FC<{ children: React.ReactNode }> = ({ children 
             <Menu className="w-5 h-5 text-slate-700" />
           </button>
 
-          <BrandLogo variant="compact" theme="light" size="sm" />
+          <BrandLogo variant="icon" theme="light" size="md" />
         </div>
 
         <div className="flex items-center gap-1.5">

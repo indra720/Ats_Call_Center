@@ -21,6 +21,10 @@ import {
   Layers,
   Sparkles,
 } from 'lucide-react';
+import { CreateArticleModal } from '../components/CreateArticleModal';
+import { ArticlePreviewModal } from '../components/ArticlePreviewModal';
+import { ActionMenu } from '@/components/common/ActionMenu';
+import { toast } from '@/store/toastStore';
 
 interface ArticleItem {
   id: number;
@@ -48,11 +52,38 @@ const ARTICLES_DATA: ArticleItem[] = [
 ];
 
 export const KnowledgeBasePage: React.FC = () => {
+  const [articles, setArticles] = useState<ArticleItem[]>(ARTICLES_DATA);
   const [activeTab, setActiveTab] = useState<'all' | 'categories' | 'tags' | 'authors' | 'settings'>('all');
   const [selectedArticle, setSelectedArticle] = useState<ArticleItem>(ARTICLES_DATA[0]);
+  const [selectedArticleForPreview, setSelectedArticleForPreview] = useState<ArticleItem | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All Categories');
+  const [selectedStatus, setSelectedStatus] = useState('All Status');
+  const [selectedAuthor, setSelectedAuthor] = useState('All Authors');
+
+  const filteredArticles = articles.filter((art) => {
+    const matchSearch =
+      art.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      art.category.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchCat = selectedCategory === 'All Categories' || art.category === selectedCategory;
+    const matchStatus = selectedStatus === 'All Status' || art.status === selectedStatus;
+    const matchAuthor = selectedAuthor === 'All Authors' || art.author === selectedAuthor;
+    return matchSearch && matchCat && matchStatus && matchAuthor;
+  });
 
   return (
     <div className="space-y-4">
+      {/* Create Article Modal */}
+      <CreateArticleModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onArticleCreated={(newArt) => {
+          setArticles([newArt, ...articles]);
+          setSelectedArticle(newArt);
+        }}
+      />
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
@@ -68,68 +99,109 @@ export const KnowledgeBasePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 shadow-sm">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => toast.info('Public Help Center', 'Opening customer portal preview...')}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 shadow-sm"
+          >
             <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
             <span>View Public Help Center</span>
           </button>
-          <button className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-[#0362FA] hover:bg-blue-600 rounded-lg shadow-sm">
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-[#0362FA] hover:bg-blue-600 rounded-lg shadow-sm"
+          >
             <Plus className="w-3.5 h-3.5" />
             <span>Create Article</span>
           </button>
         </div>
       </div>
 
-      {/* 5 KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1">
-          <div className="w-7 h-7 rounded-lg bg-[#EBF2FE] flex items-center justify-center text-[#0362FA]">
-            <BookOpen className="w-4 h-4" />
+      {/* 5 Modern Responsive KPI Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
+        {/* Card 1: Total */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between min-w-0 group">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#0362FA] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <BookOpen className="w-4 h-4" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-0.5 whitespace-nowrap">
+              <ArrowUpRight className="w-3 h-3" /> 18%
+            </span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">248</div>
-          <div className="text-xs font-semibold text-slate-500">Total Articles</div>
-          <div className="text-[11px] font-semibold text-[#13AB4A]">↗ 18% from last month</div>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">248</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">Total Articles</div>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1">
-          <div className="w-7 h-7 rounded-lg bg-[#E9F9EE] flex items-center justify-center text-[#13AB4A]">
-            <CheckCircle2 className="w-4 h-4" />
+        {/* Card 2: Published */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-emerald-200 transition-all flex flex-col justify-between min-w-0 group">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-[#E9F9EE] text-[#13AB4A] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-0.5 whitespace-nowrap">
+              <ArrowUpRight className="w-3 h-3" /> 22%
+            </span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">186</div>
-          <div className="text-xs font-semibold text-slate-500">Published</div>
-          <div className="text-[11px] font-semibold text-[#13AB4A]">↗ 22% from last month</div>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">186</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">Published Articles</div>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1">
-          <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center text-[#EF9612]">
-            <Clock className="w-4 h-4" />
+        {/* Card 3: Drafts */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-amber-200 transition-all flex flex-col justify-between min-w-0 group">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-amber-50 text-[#EF9612] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <Clock className="w-4 h-4" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-0.5 whitespace-nowrap">
+              <ArrowUpRight className="w-3 h-3" /> 5%
+            </span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">32</div>
-          <div className="text-xs font-semibold text-slate-500">Drafts</div>
-          <div className="text-[11px] font-semibold text-[#13AB4A]">↗ 5% from last month</div>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">32</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">Draft Articles</div>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1">
-          <div className="w-7 h-7 rounded-lg bg-purple-50 flex items-center justify-center text-[#871CF4]">
-            <Archive className="w-4 h-4" />
+        {/* Card 4: Archived */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-purple-200 transition-all flex flex-col justify-between min-w-0 group">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-purple-50 text-[#871CF4] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <Archive className="w-4 h-4" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 flex items-center gap-0.5 whitespace-nowrap">
+              <ArrowDownRight className="w-3 h-3" /> 8%
+            </span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">30</div>
-          <div className="text-xs font-semibold text-slate-500">Archived</div>
-          <div className="text-[11px] font-semibold text-[#E73647]">↘ 8% from last month</div>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">30</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">Archived Guides</div>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1 col-span-2 md:col-span-1">
-          <div className="w-7 h-7 rounded-lg bg-[#EBF2FE] flex items-center justify-center text-[#0362FA]">
-            <Eye className="w-4 h-4" />
+        {/* Card 5: Views */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between min-w-0 group col-span-2 sm:col-span-1">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#0362FA] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <Eye className="w-4 h-4" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-0.5 whitespace-nowrap">
+              <ArrowUpRight className="w-3 h-3" /> 35%
+            </span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">18,320</div>
-          <div className="text-xs font-semibold text-slate-500">Total Views</div>
-          <div className="text-[11px] font-semibold text-[#13AB4A]">↗ 35% from last month</div>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">18,320</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">Total Readers</div>
+          </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-6 border-b border-slate-200 text-xs font-semibold text-slate-600">
+      <div className="flex items-center gap-6 border-b border-slate-200 text-xs font-semibold text-slate-600 overflow-x-auto scrollbar-none whitespace-nowrap">
         {[
           { key: 'all', label: 'All Articles' },
           { key: 'categories', label: 'Categories' },
@@ -156,46 +228,76 @@ export const KnowledgeBasePage: React.FC = () => {
         {/* Left Section */}
         <div className="lg:col-span-7 xl:col-span-8 space-y-4">
           {/* Filter Bar */}
-          <div className="bg-white rounded-xl border border-[#E5EBF2] shadow-sm p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="bg-white rounded-xl border border-[#E5EBF2] shadow-sm p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs">
             <div className="relative flex-1 min-w-[200px]">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
               <input
                 type="text"
                 placeholder="Search articles by title, content or keywords..."
-                className="w-full pl-8 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-8 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-[#0362FA]"
               />
             </div>
 
-            <div className="flex items-center gap-1.5">
-              <select className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700"
+              >
                 <option>All Categories</option>
                 <option>Getting Started</option>
                 <option>Calling & Telephony</option>
+                <option>Campaigns</option>
+                <option>Users & Roles</option>
+                <option>IVR & Numbers</option>
+                <option>Integrations</option>
+                <option>Billing & Subscription</option>
+                <option>Troubleshooting</option>
+                <option>Reports & Analytics</option>
               </select>
-              <select className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700">
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700"
+              >
                 <option>All Status</option>
                 <option>Published</option>
                 <option>Draft</option>
+                <option>Archived</option>
               </select>
-              <select className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700">
+              <select
+                value={selectedAuthor}
+                onChange={(e) => setSelectedAuthor(e.target.value)}
+                className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700"
+              >
                 <option>All Authors</option>
                 <option>Kamlesh Kumar</option>
+                <option>Yashika Kanwar</option>
+                <option>Aakash Sharma</option>
+                <option>Sandeep Verma</option>
+                <option>Rohit Sharma</option>
               </select>
-              <button className="flex items-center gap-1 px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700">
-                <span>20 Oct 2026</span>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory('All Categories');
+                  setSelectedStatus('All Status');
+                  setSelectedAuthor('All Authors');
+                  toast.info('Filters Reset', 'Showing all knowledge base articles');
+                }}
+                className="text-[#0362FA] font-semibold hover:underline px-2"
+              >
+                Reset
               </button>
-              <button className="flex items-center gap-1 px-3 py-1.5 bg-[#0362FA] text-white font-semibold rounded-lg">
-                <Filter className="w-3 h-3" />
-                <span>Filter</span>
-              </button>
-              <button className="text-[#0362FA] font-semibold hover:underline">Reset</button>
             </div>
           </div>
 
-          {/* Table */}
+          {/* Table (Anti-Shrink) */}
           <div className="bg-white rounded-xl border border-[#E5EBF2] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+              <table className="w-full text-left border-collapse text-xs min-w-[850px] whitespace-nowrap">
                 <thead>
                   <tr className="bg-[#F8FAFC] text-slate-500 font-semibold border-b border-[#E5EBF2]">
                     <th className="py-2.5 px-3 w-8"><input type="checkbox" className="rounded border-slate-300 text-[#0362FA]" /></th>
@@ -210,13 +312,16 @@ export const KnowledgeBasePage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {ARTICLES_DATA.map((art) => {
+                  {filteredArticles.map((art) => {
                     const isSelected = selectedArticle.id === art.id;
                     return (
                       <tr
                         key={art.id}
-                        onClick={() => setSelectedArticle(art)}
-                        className={`hover:bg-[#F0F7FF] transition-colors cursor-pointer ${
+                        onClick={() => {
+                          setSelectedArticle(art);
+                          setSelectedArticleForPreview(art);
+                        }}
+                        className={`hover:bg-[#F0F7FF] transition-colors cursor-pointer group ${
                           isSelected ? 'bg-blue-50/50' : ''
                         }`}
                       >
@@ -224,7 +329,7 @@ export const KnowledgeBasePage: React.FC = () => {
                           <input type="checkbox" className="rounded border-slate-300 text-[#0362FA]" />
                         </td>
                         <td className="py-2.5 px-2 text-slate-400 font-mono text-[11px]">{art.id}</td>
-                        <td className="py-2.5 px-3 font-semibold text-slate-900 max-w-[220px] truncate">
+                        <td className="py-2.5 px-3 font-semibold text-slate-900 max-w-[220px] truncate group-hover:text-[#0362FA]">
                           {art.title}
                         </td>
                         <td className="py-2.5 px-3">
@@ -253,11 +358,71 @@ export const KnowledgeBasePage: React.FC = () => {
                             <span className="text-slate-800 truncate">{art.author}</span>
                           </div>
                         </td>
-                        <td className="py-2.5 px-3 text-center">
+                        <td className="py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
                           <div className="flex items-center justify-center gap-1">
-                            <button className="p-1 text-slate-400 hover:text-slate-700"><Edit2 className="w-3.5 h-3.5" /></button>
-                            <button className="p-1 text-slate-400 hover:text-slate-700"><Eye className="w-3.5 h-3.5" /></button>
-                            <button className="p-1 text-slate-400 hover:text-slate-700"><MoreHorizontal className="w-3.5 h-3.5" /></button>
+                            <button
+                              onClick={() => {
+                                setSelectedArticle(art);
+                                toast.info('Edit Article', `Loaded "${art.title}" into editor panel.`);
+                              }}
+                              title="Edit Article"
+                              className="p-1 text-slate-400 hover:text-[#0362FA] rounded hover:bg-slate-100"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => setSelectedArticleForPreview(art)}
+                              title="View Article Reader"
+                              className="p-1 text-slate-400 hover:text-[#0362FA] rounded hover:bg-slate-100"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+                            <ActionMenu
+                              align="right"
+                              items={[
+                                {
+                                  label: 'Read Full Article',
+                                  icon: <Eye className="w-3.5 h-3.5" />,
+                                  onClick: () => setSelectedArticleForPreview(art),
+                                },
+                                {
+                                  label: 'Edit in Panel',
+                                  icon: <Edit2 className="w-3.5 h-3.5" />,
+                                  onClick: () => {
+                                    setSelectedArticle(art);
+                                    toast.info('Editing Article', `"${art.title}" loaded in editor.`);
+                                  },
+                                },
+                                {
+                                  label: 'Copy Public Link',
+                                  icon: <ExternalLink className="w-3.5 h-3.5" />,
+                                  onClick: () => {
+                                    navigator.clipboard?.writeText(`https://help.atscallcenter.in/articles/${art.id}`);
+                                    toast.success('Link Copied', 'Public article URL copied to clipboard.');
+                                  },
+                                },
+                                {
+                                  label: art.status === 'Published' ? 'Change to Draft' : 'Publish Article',
+                                  icon: <CheckCircle2 className="w-3.5 h-3.5" />,
+                                  onClick: () => {
+                                    const nextStatus = art.status === 'Published' ? 'Draft' : 'Published';
+                                    setArticles((prev) =>
+                                      prev.map((a) => (a.id === art.id ? { ...a, status: nextStatus } : a))
+                                    );
+                                    toast.success('Status Updated', `Article marked as ${nextStatus}.`);
+                                  },
+                                },
+                                {
+                                  label: 'Delete Article',
+                                  icon: <X className="w-3.5 h-3.5" />,
+                                  danger: true,
+                                  onClick: () => {
+                                    setArticles((prev) => prev.filter((a) => a.id !== art.id));
+                                    toast.warning('Article Deleted', `"${art.title}" removed.`);
+                                  },
+                                },
+                              ]}
+                            />
                           </div>
                         </td>
                       </tr>
@@ -335,12 +500,16 @@ export const KnowledgeBasePage: React.FC = () => {
               <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Quick Links</h4>
               <div className="space-y-1.5 text-xs">
                 {[
-                  { title: 'Create New Article', desc: 'Add a new help article', color: 'bg-blue-50 text-[#0362FA]' },
-                  { title: 'Manage Categories', desc: 'Organize your content', color: 'bg-amber-50 text-amber-600' },
-                  { title: 'Manage Tags', desc: 'Create and edit tags', color: 'bg-rose-50 text-rose-600' },
-                  { title: 'Article Settings', desc: 'Configure article settings', color: 'bg-purple-50 text-purple-600' },
+                  { title: 'Create New Article', desc: 'Add a new help article', action: () => setIsCreateModalOpen(true) },
+                  { title: 'Manage Categories', desc: 'Organize your content', action: () => toast.info('Categories', 'Category manager opened') },
+                  { title: 'Manage Tags', desc: 'Create and edit tags', action: () => toast.info('Tags', 'Tag taxonomy manager opened') },
+                  { title: 'Article Settings', desc: 'Configure article settings', action: () => toast.info('Settings', 'Knowledge base settings opened') },
                 ].map((q, i) => (
-                  <div key={i} className="p-1.5 bg-slate-50 hover:bg-slate-100 rounded-lg flex items-center justify-between cursor-pointer">
+                  <div
+                    key={i}
+                    onClick={q.action}
+                    className="p-1.5 bg-slate-50 hover:bg-slate-100 rounded-lg flex items-center justify-between cursor-pointer transition-colors"
+                  >
                     <div>
                       <div className="font-semibold text-slate-800 text-[11px]">{q.title}</div>
                       <div className="text-[10px] text-slate-400">{q.desc}</div>
@@ -441,11 +610,29 @@ export const KnowledgeBasePage: React.FC = () => {
           </div>
 
           {/* Submit */}
-          <button className="w-full py-2 bg-[#0362FA] hover:bg-blue-600 text-white font-semibold text-xs rounded-lg shadow-sm">
+          <button
+            type="button"
+            onClick={() => {
+              toast.success('Article Updated', `Changes to "${selectedArticle.title}" saved successfully.`);
+            }}
+            className="w-full py-2 bg-[#0362FA] hover:bg-blue-600 text-white font-semibold text-xs rounded-lg shadow-sm transition-colors"
+          >
             Update Article
           </button>
         </div>
       </div>
+
+      {/* Article Full Preview Modal */}
+      <ArticlePreviewModal
+        isOpen={!!selectedArticleForPreview}
+        article={selectedArticleForPreview}
+        onClose={() => setSelectedArticleForPreview(null)}
+        onEditArticle={(art) => {
+          setSelectedArticle(art);
+          setSelectedArticleForPreview(null);
+          toast.info('Editing Article', `Loaded "${art.title}" in editor panel.`);
+        }}
+      />
     </div>
   );
 };

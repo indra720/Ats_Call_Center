@@ -26,7 +26,11 @@ import {
   ArrowUpRight,
   ExternalLink,
   Trash2,
+  Edit2,
+  Copy,
 } from 'lucide-react';
+import { ActionMenu } from '@/components/common/ActionMenu';
+import { toast } from '@/store/toastStore';
 
 interface TemplateItem {
   id: number;
@@ -165,7 +169,7 @@ export const WhatsAppTemplatesPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-6 border-b border-slate-200 text-xs font-semibold text-slate-600">
+      <div className="flex items-center gap-6 border-b border-slate-200 text-xs font-semibold text-slate-600 overflow-x-auto scrollbar-none whitespace-nowrap">
         {[
           { key: 'templates', label: 'Templates' },
           { key: 'categories', label: 'Template Categories' },
@@ -224,7 +228,7 @@ export const WhatsAppTemplatesPage: React.FC = () => {
 
             {/* Table */}
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+              <table className="w-full text-left border-collapse text-xs min-w-[700px] whitespace-nowrap">
                 <thead>
                   <tr className="bg-[#F8FAFC] text-slate-500 font-semibold border-b border-[#E5EBF2]">
                     <th className="py-2 px-2.5 w-6">
@@ -276,9 +280,29 @@ export const WhatsAppTemplatesPage: React.FC = () => {
                         </td>
                         <td className="py-2 px-2 text-slate-500">{t.updatedOn}</td>
                         <td className="py-2 px-2 text-center">
-                          <button className="text-slate-400 hover:text-slate-700">
-                            <MoreHorizontal className="w-3.5 h-3.5" />
-                          </button>
+                          <div className="flex items-center justify-center">
+                            <ActionMenu
+                              align="right"
+                              items={[
+                                {
+                                  label: 'Edit Template',
+                                  icon: <Edit2 className="w-3.5 h-3.5" />,
+                                  onClick: () => toast.info(`Editing template: ${t.name}`),
+                                },
+                                {
+                                  label: 'Duplicate Template',
+                                  icon: <Copy className="w-3.5 h-3.5" />,
+                                  onClick: () => toast.success(`Created duplicate of ${t.name}`),
+                                },
+                                {
+                                  label: 'Delete Template',
+                                  icon: <Trash2 className="w-3.5 h-3.5" />,
+                                  danger: true,
+                                  onClick: () => toast.error(`Deleted template ${t.name}`),
+                                },
+                              ]}
+                            />
+                          </div>
                         </td>
                       </tr>
                     );

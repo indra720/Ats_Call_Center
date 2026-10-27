@@ -280,15 +280,15 @@ export const SalesReportPage: React.FC = () => {
             <a href="#/reports/agents" className="text-[11px] font-semibold text-[#0362FA] hover:underline">View All</a>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full min-w-[550px] text-left border-collapse text-xs whitespace-nowrap">
               <thead>
                 <tr className="border-b border-slate-100 text-slate-400 font-semibold text-[11px]">
-                  <th className="py-2 w-6">#</th>
-                  <th className="py-2">Agent Name</th>
-                  <th className="py-2">Total Sales</th>
-                  <th className="py-2">Conversion</th>
-                  <th className="py-2">Revenue</th>
-                  <th className="py-2">Avg. Value</th>
+                  <th className="py-2.5 px-2 w-6">#</th>
+                  <th className="py-2.5 px-2">Agent Name</th>
+                  <th className="py-2.5 px-2">Total Sales</th>
+                  <th className="py-2.5 px-2">Conversion</th>
+                  <th className="py-2.5 px-2">Revenue</th>
+                  <th className="py-2.5 px-2">Avg. Value</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-700">
@@ -299,18 +299,18 @@ export const SalesReportPage: React.FC = () => {
                   { id: 4, name: 'Priya Singh', sales: 18, conv: '16%', rev: '₹48,000', avg: '₹2,800', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=60&h=60&fit=crop' },
                   { id: 5, name: 'Neha Verma', sales: 14, conv: '14%', rev: '₹32,000', avg: '₹2,200', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&h=60&fit=crop' },
                 ].map((a) => (
-                  <tr key={a.id} className="hover:bg-slate-50">
-                    <td className="py-2 text-slate-400 font-mono text-[11px]">{a.id}</td>
-                    <td className="py-2">
+                  <tr key={a.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="py-2.5 px-2 text-slate-400 font-mono text-[11px]">{a.id}</td>
+                    <td className="py-2.5 px-2">
                       <div className="flex items-center gap-1.5">
                         <img src={a.avatar} alt={a.name} className="w-5 h-5 rounded-full object-cover" />
                         <span className="font-semibold text-slate-900">{a.name}</span>
                       </div>
                     </td>
-                    <td className="py-2">{a.sales}</td>
-                    <td className="py-2 font-bold text-slate-900">{a.conv}</td>
-                    <td className="py-2 font-semibold text-[#13AB4A]">{a.rev}</td>
-                    <td className="py-2">{a.avg}</td>
+                    <td className="py-2.5 px-2 font-medium text-slate-800">{a.sales}</td>
+                    <td className="py-2.5 px-2 font-bold text-slate-900">{a.conv}</td>
+                    <td className="py-2.5 px-2 font-semibold text-[#13AB4A]">{a.rev}</td>
+                    <td className="py-2.5 px-2 text-slate-600">{a.avg}</td>
                   </tr>
                 ))}
               </tbody>
@@ -412,15 +412,15 @@ export const SalesReportPage: React.FC = () => {
             <a href="#/reports/campaigns" className="text-[11px] font-semibold text-[#0362FA] hover:underline">View All</a>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full min-w-[550px] text-left border-collapse text-xs whitespace-nowrap">
               <thead>
                 <tr className="border-b border-slate-100 text-slate-400 font-semibold text-[11px]">
-                  <th className="py-2 w-6">#</th>
-                  <th className="py-2">Campaign Name</th>
-                  <th className="py-2">Total Sales</th>
-                  <th className="py-2">Revenue</th>
-                  <th className="py-2">ROI</th>
-                  <th className="py-2">Status</th>
+                  <th className="py-2.5 px-2 w-6">#</th>
+                  <th className="py-2.5 px-2">Campaign Name</th>
+                  <th className="py-2.5 px-2">Total Sales</th>
+                  <th className="py-2.5 px-2">Revenue</th>
+                  <th className="py-2.5 px-2">ROI</th>
+                  <th className="py-2.5 px-2">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-700">
@@ -432,13 +432,13 @@ export const SalesReportPage: React.FC = () => {
                   { id: 5, name: 'Feedback & Survey', sales: 12, rev: '₹32,000', roi: '220%', status: 'Completed' },
                   { id: 6, name: 'Upsell Campaign', sales: 10, rev: '₹13,000', roi: '180%', status: 'Active' },
                 ].map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50">
-                    <td className="py-2 text-slate-400 font-mono text-[11px]">{c.id}</td>
-                    <td className="py-2 font-semibold text-slate-900">{c.name}</td>
-                    <td className="py-2">{c.sales}</td>
-                    <td className="py-2 font-semibold text-slate-900">{c.rev}</td>
-                    <td className="py-2 text-[#13AB4A] font-bold">{c.roi}</td>
-                    <td className="py-2">
+                  <tr key={c.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="py-2.5 px-2 text-slate-400 font-mono text-[11px]">{c.id}</td>
+                    <td className="py-2.5 px-2 font-semibold text-slate-900">{c.name}</td>
+                    <td className="py-2.5 px-2 text-slate-700">{c.sales}</td>
+                    <td className="py-2.5 px-2 font-semibold text-slate-900">{c.rev}</td>
+                    <td className="py-2.5 px-2 text-[#13AB4A] font-bold">{c.roi}</td>
+                    <td className="py-2.5 px-2">
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#E9F9EE] text-[#13AB4A]">
                         {c.status}
                       </span>

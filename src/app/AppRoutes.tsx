@@ -16,6 +16,7 @@ import { LeadPipelinePage } from '@/features/leads/pages/LeadPipelinePage';
 import { DuplicateLeadsPage } from '@/features/leads/pages/DuplicateLeadsPage';
 import { LeadSourcesPage } from '@/features/leads/pages/LeadSourcesPage';
 import { RecycleBinPage } from '@/features/leads/pages/RecycleBinPage';
+import { LeadDetailsPage } from '@/features/leads/pages/LeadDetailsPage';
 
 // Calling Pages
 import { CallDashboardPage } from '@/features/calls/pages/CallDashboardPage';
@@ -25,6 +26,8 @@ import { CallHistoryPage } from '@/features/calls/pages/CallHistoryPage';
 import { CallRecordingsPage } from '@/features/calls/pages/CallRecordingsPage';
 import { VoicemailPage } from '@/features/calls/pages/VoicemailPage';
 import { CallScriptsPage } from '@/features/calls/pages/CallScriptsPage';
+import { IvrNumbersPage } from '@/features/calls/pages/IvrNumbersPage';
+import { CallSettingsPage } from '@/features/calls/pages/CallSettingsPage';
 
 // Communication & Campaigns
 import { ConversationsPage } from '@/features/conversations/pages/ConversationsPage';
@@ -45,7 +48,35 @@ import { UsersRolesPage } from '@/features/settings/pages/UsersRolesPage';
 import { CallPerformanceReportPage } from '@/features/reports/pages/CallPerformanceReportPage';
 import { SalesReportPage } from '@/features/reports/pages/SalesReportPage';
 import { AgentPerformanceReportPage } from '@/features/reports/pages/AgentPerformanceReportPage';
+import { CallAnalyticsPage } from '@/features/reports/pages/CallAnalyticsPage';
+import { TeamReportsPage } from '@/features/reports/pages/TeamReportsPage';
+import { CampaignPerformanceReportPage } from '@/features/reports/pages/CampaignPerformanceReportPage';
+import { CustomerReportsPage } from '@/features/reports/pages/CustomerReportsPage';
+import { CustomerConversionReportPage } from '@/features/reports/pages/CustomerConversionReportPage';
+import { LeadAgingReportPage } from '@/features/reports/pages/LeadAgingReportPage';
+import { LeadNurturingReportPage } from '@/features/reports/pages/LeadNurturingReportPage';
+import { CallQualityReportPage } from '@/features/reports/pages/CallQualityReportPage';
+import { CustomReportBuilderPage } from '@/features/reports/pages/CustomReportBuilderPage';
+import { ReportTemplatesPage } from '@/features/reports/pages/ReportTemplatesPage';
+import { ScheduledReportsPage } from '@/features/reports/pages/ScheduledReportsPage';
+import { ExportCenterPage } from '@/features/reports/pages/ExportCenterPage';
+import { ReportDeliveryHistoryPage } from '@/features/reports/pages/ReportDeliveryHistoryPage';
+import { ReportSettingsPage } from '@/features/reports/pages/ReportSettingsPage';
 import { BillingPage } from '@/features/billing/pages/BillingPage';
+import { InvoicesPage } from '@/features/billing/pages/InvoicesPage';
+import { PaymentMethodsPage } from '@/features/billing/pages/PaymentMethodsPage';
+import { PricingPlansPage } from '@/features/billing/pages/PricingPlansPage';
+import { SystemSettingsPage } from '@/features/settings/pages/SystemSettingsPage';
+import { BrandingSettingsPage } from '@/features/settings/pages/BrandingSettingsPage';
+import { BackupDataPage } from '@/features/settings/pages/BackupDataPage';
+import { ApiWebhooksPage } from '@/features/settings/pages/ApiWebhooksPage';
+import { ActivityLogsPage } from '@/features/settings/pages/ActivityLogsPage';
+import { SystemMaintenancePage } from '@/features/settings/pages/SystemMaintenancePage';
+import { UserProfilePage } from '@/features/settings/pages/UserProfilePage';
+import { SmsTemplatesPage } from '@/features/templates/pages/SmsTemplatesPage';
+import { TemplatesDirectoryPage } from '@/features/templates/pages/TemplatesDirectoryPage';
+import { EmailTemplatesPage } from '@/features/templates/pages/EmailTemplatesPage';
+import { IntegrationsPage } from '@/features/settings/pages/IntegrationsPage';
 import { KnowledgeBasePage } from '@/features/knowledge/pages/KnowledgeBasePage';
 import { SupportTicketsPage } from '@/features/help/pages/SupportTicketsPage';
 
@@ -157,12 +188,7 @@ export const AppRoutes: React.FC = () => {
             path="/leads/:id"
             element={
               <ProtectedRoute permission="leads:view">
-                <ArchetypePage
-                  title="Lead Profile & Activity History"
-                  subtitle="Detailed lead overview, call records, touchpoints and timeline"
-                  screenNumbers="76"
-                  moduleName="LEADS & CONTACTS"
-                />
+                <LeadDetailsPage />
               </ProtectedRoute>
             }
           />
@@ -236,12 +262,7 @@ export const AppRoutes: React.FC = () => {
             path="/calls/ivr-numbers"
             element={
               <ProtectedRoute permission="calls:manage_ivr">
-                <ArchetypePage
-                  title="IVR Menus & Phone Numbers"
-                  subtitle="DID phone numbers, routing trees, and business hours setup"
-                  screenNumbers="54"
-                  moduleName="CALLING & CALL CENTER"
-                />
+                <IvrNumbersPage />
               </ProtectedRoute>
             }
           />
@@ -249,12 +270,7 @@ export const AppRoutes: React.FC = () => {
             path="/calls/settings"
             element={
               <ProtectedRoute permission="calls:manage_settings">
-                <ArchetypePage
-                  title="Call Center Configuration"
-                  subtitle="WebRTC codec settings, maximum ring duration, queue limits"
-                  screenNumbers="37, 91"
-                  moduleName="CALLING & CALL CENTER"
-                />
+                <CallSettingsPage />
               </ProtectedRoute>
             }
           />
@@ -382,12 +398,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports"
             element={
               <ProtectedRoute permission="reports:view">
-                <ArchetypePage
-                  title="Call Analytics Overview"
-                  subtitle="High-level operational performance and customer conversion metrics"
-                  screenNumbers="13, 29, 83"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <CallAnalyticsPage />
               </ProtectedRoute>
             }
           />
@@ -419,12 +430,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/teams"
             element={
               <ProtectedRoute permission="reports:view">
-                <ArchetypePage
-                  title="Team & Shift Performance"
-                  subtitle="Comparative analytics across North, West, South and East zones"
-                  screenNumbers="28, 82"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <TeamReportsPage />
               </ProtectedRoute>
             }
           />
@@ -432,12 +438,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/campaigns"
             element={
               <ProtectedRoute permission="reports:view">
-                <ArchetypePage
-                  title="Campaigns Analytics"
-                  subtitle="Outbound auto-dialer campaign reach and conversion rates"
-                  screenNumbers="69, 92"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <CampaignPerformanceReportPage />
               </ProtectedRoute>
             }
           />
@@ -445,12 +446,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/customers"
             element={
               <ProtectedRoute permission="reports:view">
-                <ArchetypePage
-                  title="Customer Accounts Report"
-                  subtitle="Account retention, NPS feedback and repeat engagement"
-                  screenNumbers="23, 60"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <CustomerReportsPage />
               </ProtectedRoute>
             }
           />
@@ -466,12 +462,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/conversion"
             element={
               <ProtectedRoute permission="reports:view">
-                <ArchetypePage
-                  title="Customer Conversion Report"
-                  subtitle="Stage-by-stage drop-off analysis from Lead to Customer"
-                  screenNumbers="26, 66, 80"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <CustomerConversionReportPage />
               </ProtectedRoute>
             }
           />
@@ -479,12 +470,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/lead-aging"
             element={
               <ProtectedRoute permission="reports:view">
-                <ArchetypePage
-                  title="Lead Aging & Stalled Deals"
-                  subtitle="Time spent in pipeline stages without touchpoints"
-                  screenNumbers="08"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <LeadAgingReportPage />
               </ProtectedRoute>
             }
           />
@@ -492,12 +478,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/lead-nurturing"
             element={
               <ProtectedRoute permission="reports:view">
-                <ArchetypePage
-                  title="Lead Nurturing & Follow-up Report"
-                  subtitle="Automated email and WhatsApp drip response metrics"
-                  screenNumbers="30, 84"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <LeadNurturingReportPage />
               </ProtectedRoute>
             }
           />
@@ -505,12 +486,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/call-quality"
             element={
               <ProtectedRoute permission="reports:view">
-                <ArchetypePage
-                  title="Call Quality & QA Scorecard"
-                  subtitle="Compliance scoring, script adherence and sentiment evaluations"
-                  screenNumbers="57"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <CallQualityReportPage />
               </ProtectedRoute>
             }
           />
@@ -518,12 +494,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/builder"
             element={
               <ProtectedRoute permission="reports:create">
-                <ArchetypePage
-                  title="Custom Report Builder"
-                  subtitle="Drag and drop metrics, custom filters and chart visualizer"
-                  screenNumbers="11, 19, 48"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <CustomReportBuilderPage />
               </ProtectedRoute>
             }
           />
@@ -531,12 +502,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/custom"
             element={
               <ProtectedRoute permission="reports:create">
-                <ArchetypePage
-                  title="Custom Reports"
-                  subtitle="User-created custom metrics and report views"
-                  screenNumbers="11, 19, 48"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <CustomReportBuilderPage />
               </ProtectedRoute>
             }
           />
@@ -544,12 +510,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/templates"
             element={
               <ProtectedRoute permission="reports:manage_templates">
-                <ArchetypePage
-                  title="Report Templates Library"
-                  subtitle="Pre-configured reporting models and dashboard views"
-                  screenNumbers="20, 72"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <ReportTemplatesPage />
               </ProtectedRoute>
             }
           />
@@ -557,12 +518,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/scheduled"
             element={
               <ProtectedRoute permission="reports:schedule">
-                <ArchetypePage
-                  title="Automated Scheduled Reports"
-                  subtitle="Daily/weekly scheduled PDF exports delivered via email"
-                  screenNumbers="34, 43, 56, 88"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <ScheduledReportsPage />
               </ProtectedRoute>
             }
           />
@@ -570,12 +526,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/scheduling"
             element={
               <ProtectedRoute permission="reports:schedule">
-                <ArchetypePage
-                  title="Automated Scheduled Reports"
-                  subtitle="Daily/weekly scheduled PDF exports delivered via email"
-                  screenNumbers="34, 43, 56, 88"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <ScheduledReportsPage />
               </ProtectedRoute>
             }
           />
@@ -583,12 +534,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/export-center"
             element={
               <ProtectedRoute permission="reports:export">
-                <ArchetypePage
-                  title="Export & Download Center"
-                  subtitle="Historical data exports, CSVs and generated reports"
-                  screenNumbers="65"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <ExportCenterPage />
               </ProtectedRoute>
             }
           />
@@ -596,12 +542,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/delivery-history"
             element={
               <ProtectedRoute permission="reports:view_logs">
-                <ArchetypePage
-                  title="Report Delivery Logs"
-                  subtitle="Email and webhook dispatch timestamps and status"
-                  screenNumbers="79"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <ReportDeliveryHistoryPage />
               </ProtectedRoute>
             }
           />
@@ -609,12 +550,7 @@ export const AppRoutes: React.FC = () => {
             path="/reports/settings"
             element={
               <ProtectedRoute permission="reports:manage_settings">
-                <ArchetypePage
-                  title="Analytics & Report Settings"
-                  subtitle="Default metrics, fiscal year dates and retention"
-                  screenNumbers="27, 81"
-                  moduleName="REPORTS & ANALYTICS"
-                />
+                <ReportSettingsPage />
               </ProtectedRoute>
             }
           />
@@ -632,12 +568,7 @@ export const AppRoutes: React.FC = () => {
             path="/settings/integrations"
             element={
               <ProtectedRoute permission="settings:manage_integrations">
-                <ArchetypePage
-                  title="3rd-Party Integrations"
-                  subtitle="WhatsApp Business API, Twilio, Exotel, Zoho, Salesforce & Zapier"
-                  screenNumbers="16, 71, 99"
-                  moduleName="SETTINGS & ADMIN"
-                />
+                <IntegrationsPage />
               </ProtectedRoute>
             }
           />
@@ -645,12 +576,7 @@ export const AppRoutes: React.FC = () => {
             path="/templates"
             element={
               <ProtectedRoute permission="templates:view">
-                <ArchetypePage
-                  title="Message Templates Directory"
-                  subtitle="Omni-channel templates for SMS, WhatsApp and Email"
-                  screenNumbers="14"
-                  moduleName="TEMPLATES & MESSAGING"
-                />
+                <TemplatesDirectoryPage />
               </ProtectedRoute>
             }
           />
@@ -658,12 +584,7 @@ export const AppRoutes: React.FC = () => {
             path="/templates/email"
             element={
               <ProtectedRoute permission="templates:view">
-                <ArchetypePage
-                  title="Email Templates & Signatures"
-                  subtitle="HTML email templates and agent signatures"
-                  screenNumbers="53"
-                  moduleName="TEMPLATES & MESSAGING"
-                />
+                <EmailTemplatesPage />
               </ProtectedRoute>
             }
           />
@@ -679,12 +600,7 @@ export const AppRoutes: React.FC = () => {
             path="/templates/sms"
             element={
               <ProtectedRoute permission="templates:view">
-                <ArchetypePage
-                  title="SMS Templates (DLT Registered)"
-                  subtitle="TRAI/DLT compliant transactional & promotional SMS drafts"
-                  screenNumbers="64"
-                  moduleName="TEMPLATES & MESSAGING"
-                />
+                <SmsTemplatesPage />
               </ProtectedRoute>
             }
           />
@@ -702,12 +618,7 @@ export const AppRoutes: React.FC = () => {
             path="/billing/invoices"
             element={
               <ProtectedRoute permission="billing:view_invoices">
-                <ArchetypePage
-                  title="Invoices & Tax Receipts"
-                  subtitle="GST-compliant billing invoices and download links"
-                  screenNumbers="73"
-                  moduleName="BILLING & PLAN"
-                />
+                <InvoicesPage />
               </ProtectedRoute>
             }
           />
@@ -715,12 +626,7 @@ export const AppRoutes: React.FC = () => {
             path="/billing/payment-methods"
             element={
               <ProtectedRoute permission="billing:manage_payment_methods">
-                <ArchetypePage
-                  title="Payment Methods & UPI"
-                  subtitle="Corporate credit cards, Net Banking, and Auto-Debit UPI"
-                  screenNumbers="09"
-                  moduleName="BILLING & PLAN"
-                />
+                <PaymentMethodsPage />
               </ProtectedRoute>
             }
           />
@@ -728,12 +634,7 @@ export const AppRoutes: React.FC = () => {
             path="/billing/plans"
             element={
               <ProtectedRoute permission="billing:manage_plan">
-                <ArchetypePage
-                  title="Pricing & Plan Upgrades"
-                  subtitle="Starter, Professional, and Enterprise AI Call Center tiers"
-                  screenNumbers="52"
-                  moduleName="BILLING & PLAN"
-                />
+                <PricingPlansPage />
               </ProtectedRoute>
             }
           />
@@ -751,12 +652,7 @@ export const AppRoutes: React.FC = () => {
             path="/settings/system"
             element={
               <ProtectedRoute permission="settings:edit_system">
-                <ArchetypePage
-                  title="System & Organization Settings"
-                  subtitle="Company details, timezones, working hours and currencies"
-                  screenNumbers="77, 94, 95"
-                  moduleName="SETTINGS & ADMIN"
-                />
+                <SystemSettingsPage />
               </ProtectedRoute>
             }
           />
@@ -764,12 +660,7 @@ export const AppRoutes: React.FC = () => {
             path="/settings/branding"
             element={
               <ProtectedRoute permission="settings:edit_branding">
-                <ArchetypePage
-                  title="Branding & Appearance"
-                  subtitle="White-label logos, theme colors, email header and custom domain"
-                  screenNumbers="61"
-                  moduleName="SETTINGS & ADMIN"
-                />
+                <BrandingSettingsPage />
               </ProtectedRoute>
             }
           />
@@ -777,12 +668,7 @@ export const AppRoutes: React.FC = () => {
             path="/settings/backup"
             element={
               <ProtectedRoute permission="settings:manage_backup">
-                <ArchetypePage
-                  title="Backup & Data Management"
-                  subtitle="Automated cloud snapshots, point-in-time recovery and database exports"
-                  screenNumbers="62"
-                  moduleName="SETTINGS & ADMIN"
-                />
+                <BackupDataPage />
               </ProtectedRoute>
             }
           />
@@ -790,12 +676,7 @@ export const AppRoutes: React.FC = () => {
             path="/settings/api-webhooks"
             element={
               <ProtectedRoute permission="settings:manage_api">
-                <ArchetypePage
-                  title="API Keys & Webhooks"
-                  subtitle="REST API access tokens, secret keys and outbound event webhooks"
-                  screenNumbers="35, 89, 93"
-                  moduleName="SETTINGS & ADMIN"
-                />
+                <ApiWebhooksPage />
               </ProtectedRoute>
             }
           />
@@ -803,12 +684,7 @@ export const AppRoutes: React.FC = () => {
             path="/settings/activity-logs"
             element={
               <ProtectedRoute permission="settings:view_audit_logs">
-                <ArchetypePage
-                  title="Activity Logs & Audit Trail"
-                  subtitle="Detailed audit log of logins, role edits, data exports and calls"
-                  screenNumbers="58"
-                  moduleName="SETTINGS & ADMIN"
-                />
+                <ActivityLogsPage />
               </ProtectedRoute>
             }
           />
@@ -816,12 +692,7 @@ export const AppRoutes: React.FC = () => {
             path="/settings/maintenance"
             element={
               <ProtectedRoute permission="settings:manage_maintenance">
-                <ArchetypePage
-                  title="System Maintenance & Health"
-                  subtitle="System status, server uptime, cache clearing and diagnostics"
-                  screenNumbers="31, 67, 85, 100"
-                  moduleName="SETTINGS & ADMIN"
-                />
+                <SystemMaintenancePage />
               </ProtectedRoute>
             }
           />
@@ -853,12 +724,7 @@ export const AppRoutes: React.FC = () => {
             path="/settings/profile"
             element={
               <ProtectedRoute>
-                <ArchetypePage
-                  title="User Profile & Preferences"
-                  subtitle="Personal details, notification settings, audio devices and password"
-                  screenNumbers="96"
-                  moduleName="SETTINGS & ADMIN"
-                />
+                <UserProfilePage />
               </ProtectedRoute>
             }
           />

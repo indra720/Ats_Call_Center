@@ -198,20 +198,20 @@ export const LeadSourcesPage: React.FC = () => {
             key={src.id}
             className="bg-white rounded-2xl border border-[#E5EBF2] p-4 shadow-card hover:border-[#CBD5E1] transition-all space-y-3 relative"
           >
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-2.5">
+            <div className="flex items-start justify-between gap-2 min-w-0">
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
                 <div className={`w-10 h-10 rounded-xl ${src.bg} flex items-center justify-center shrink-0`}>
                   {renderIcon(src.iconName)}
                 </div>
-                <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-slate-900 leading-tight truncate">
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-xs font-bold text-slate-900 leading-tight truncate" title={src.name}>
                     {src.name}
                   </h4>
-                  <span className="text-[10px] text-slate-400">{src.category}</span>
+                  <span className="text-[10px] text-slate-400 truncate block">{src.category}</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5 shrink-0">
+              <div className="flex items-center gap-1.5 shrink-0 pl-1">
                 <span
                   className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
                     src.status === 'Active'

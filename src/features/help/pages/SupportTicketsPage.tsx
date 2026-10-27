@@ -9,7 +9,6 @@ import {
   Search,
   ChevronDown,
   Filter,
-  MoreHorizontal,
   ChevronLeft,
   ChevronRight,
   HelpCircle,
@@ -22,7 +21,15 @@ import {
   Zap,
   CreditCard,
   AlertTriangle,
+  Edit2,
+  Trash2,
+  UserCheck,
 } from 'lucide-react';
+import { ActionMenu } from '@/components/common/ActionMenu';
+import { toast } from '@/store/toastStore';
+import { CreateTicketModal } from '../components/CreateTicketModal';
+import { TicketDetailModal } from '../components/TicketDetailModal';
+import { useNavigate } from 'react-router-dom';
 
 interface TicketItem {
   id: number;
@@ -51,18 +58,54 @@ const TICKETS_DATA: TicketItem[] = [
 ];
 
 export const SupportTicketsPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [tickets, setTickets] = useState<TicketItem[]>(TICKETS_DATA);
   const [activeTab, setActiveTab] = useState<'all' | 'open' | 'inprogress' | 'resolved' | 'closed'>('all');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedTicketForDetail, setSelectedTicketForDetail] = useState<TicketItem | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [departmentFilter, setDepartmentFilter] = useState('All Departments');
+  const [priorityFilter, setPriorityFilter] = useState('All Priority');
+  const [statusFilter, setStatusFilter] = useState('All Status');
 
-  const filteredTickets = TICKETS_DATA.filter((t) => {
-    if (activeTab === 'open') return t.status === 'Open';
-    if (activeTab === 'inprogress') return t.status === 'In Progress';
-    if (activeTab === 'resolved') return t.status === 'Resolved';
-    if (activeTab === 'closed') return t.status === 'Closed';
+  const filteredTickets = tickets.filter((t) => {
+    // Tab filter
+    if (activeTab === 'open' && t.status !== 'Open') return false;
+    if (activeTab === 'inprogress' && t.status !== 'In Progress') return false;
+    if (activeTab === 'resolved' && t.status !== 'Resolved') return false;
+    if (activeTab === 'closed' && t.status !== 'Closed') return false;
+
+    // Search filter
+    const matchesSearch =
+      t.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      t.ticketId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      t.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      t.category.toLowerCase().includes(searchTerm.toLowerCase());
+    if (!matchesSearch) return false;
+
+    // Department filter
+    if (departmentFilter !== 'All Departments' && t.category !== departmentFilter) return false;
+
+    // Priority filter
+    if (priorityFilter !== 'All Priority' && t.priority !== priorityFilter) return false;
+
+    // Status filter
+    if (statusFilter !== 'All Status' && t.status !== statusFilter) return false;
+
     return true;
   });
 
   return (
     <div className="space-y-4">
+      {/* Create Ticket Modal */}
+      <CreateTicketModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onTicketCreated={(newTicket) => {
+          setTickets([newTicket, ...tickets]);
+        }}
+      />
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
@@ -78,95 +121,125 @@ export const SupportTicketsPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 shadow-sm">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => navigate('/knowledge-base')}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 shadow-sm"
+          >
             <BookOpen className="w-3.5 h-3.5 text-slate-500" />
             <span>View Knowledge Base</span>
           </button>
-          <button className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-[#0362FA] hover:bg-blue-600 rounded-lg shadow-sm">
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-[#0362FA] hover:bg-blue-600 rounded-lg shadow-sm"
+          >
             <Plus className="w-3.5 h-3.5" />
             <span>Create Ticket</span>
           </button>
         </div>
       </div>
 
-      {/* 6 Top KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-3.5">
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1">
-          <div className="w-7 h-7 rounded-lg bg-[#EBF2FE] flex items-center justify-center text-[#0362FA]">
-            <Ticket className="w-4 h-4" />
+      {/* 6 Modern Responsive KPI Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
+        {/* Card 1: Total */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between min-w-0 group">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#0362FA] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <Ticket className="w-4 h-4" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-0.5 whitespace-nowrap">
+              <ArrowUpRight className="w-3 h-3" /> 12%
+            </span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">128</div>
-          <div className="text-xs font-semibold text-slate-500">Total Tickets</div>
-          <div className="flex items-center text-[11px] font-semibold text-[#13AB4A]">
-            <ArrowUpRight className="w-3 h-3 mr-0.5" />
-            <span>12% from last month</span>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1">
-          <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center text-[#EF9612]">
-            <Clock className="w-4 h-4" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900">24</div>
-          <div className="text-xs font-semibold text-slate-500">Open Tickets</div>
-          <div className="flex items-center text-[11px] font-semibold text-[#E73647]">
-            <ArrowDownRight className="w-3 h-3 mr-0.5" />
-            <span>5% from last month</span>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">128</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">Total Tickets</div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1">
-          <div className="w-7 h-7 rounded-lg bg-[#EBF2FE] flex items-center justify-center text-[#0362FA]">
-            <Clock className="w-4 h-4" />
+        {/* Card 2: Open */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-amber-200 transition-all flex flex-col justify-between min-w-0 group">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-amber-50 text-[#EF9612] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <Clock className="w-4 h-4" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-[#E73647] border border-rose-100 flex items-center gap-0.5 whitespace-nowrap">
+              <ArrowDownRight className="w-3 h-3" /> 5%
+            </span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">36</div>
-          <div className="text-xs font-semibold text-slate-500">In Progress</div>
-          <div className="flex items-center text-[11px] font-semibold text-[#13AB4A]">
-            <ArrowUpRight className="w-3 h-3 mr-0.5" />
-            <span>18% from last month</span>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1">
-          <div className="w-7 h-7 rounded-lg bg-[#E9F9EE] flex items-center justify-center text-[#13AB4A]">
-            <CheckCircle2 className="w-4 h-4" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900">62</div>
-          <div className="text-xs font-semibold text-slate-500">Resolved Tickets</div>
-          <div className="flex items-center text-[11px] font-semibold text-[#13AB4A]">
-            <ArrowUpRight className="w-3 h-3 mr-0.5" />
-            <span>24% from last month</span>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">24</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">Open Tickets</div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1">
-          <div className="w-7 h-7 rounded-lg bg-[#EBF2FE] flex items-center justify-center text-[#0362FA]">
-            <Clock className="w-4 h-4" />
+        {/* Card 3: In Progress */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between min-w-0 group">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <Clock className="w-4 h-4" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-0.5 whitespace-nowrap">
+              <ArrowUpRight className="w-3 h-3" /> 18%
+            </span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">2h 18m</div>
-          <div className="text-xs font-semibold text-slate-500">Average Response</div>
-          <div className="flex items-center text-[11px] font-semibold text-[#13AB4A]">
-            <ArrowUpRight className="w-3 h-3 mr-0.5" />
-            <span>28% faster</span>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">36</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">In Progress</div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-3.5 border border-[#E5EBF2] shadow-sm space-y-1">
-          <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center text-[#EF9612]">
-            <Star className="w-4 h-4 fill-current" />
+        {/* Card 4: Resolved */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-emerald-200 transition-all flex flex-col justify-between min-w-0 group">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-[#E9F9EE] text-[#13AB4A] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-0.5 whitespace-nowrap">
+              <ArrowUpRight className="w-3 h-3" /> 24%
+            </span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">4.8 / 5</div>
-          <div className="text-xs font-semibold text-slate-500">Customer Satisfaction</div>
-          <div className="flex items-center text-[11px] font-semibold text-[#13AB4A]">
-            <ArrowUpRight className="w-3 h-3 mr-0.5" />
-            <span>92% positive</span>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">62</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">Resolved Tickets</div>
+          </div>
+        </div>
+
+        {/* Card 5: Response Time */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between min-w-0 group">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <Zap className="w-4 h-4" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-0.5 whitespace-nowrap">
+              <ArrowUpRight className="w-3 h-3" /> 28%
+            </span>
+          </div>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">2h 18m</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">Average Response</div>
+          </div>
+        </div>
+
+        {/* Card 6: Satisfaction */}
+        <div className="bg-white rounded-xl p-3 sm:p-3.5 border border-slate-200/90 shadow-xs hover:shadow-md hover:border-amber-200 transition-all flex flex-col justify-between min-w-0 group">
+          <div className="flex items-center justify-between gap-1">
+            <div className="w-8 h-8 rounded-lg bg-amber-50 text-[#EF9612] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <Star className="w-4 h-4 fill-current" />
+            </div>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-0.5 whitespace-nowrap">
+              92% pos
+            </span>
+          </div>
+          <div className="mt-2.5 min-w-0">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">4.8 / 5</div>
+            <div className="text-xs font-medium text-slate-500 truncate mt-0.5">Satisfaction Score</div>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-6 border-b border-slate-200 text-xs font-semibold text-slate-600">
+      <div className="flex items-center gap-6 border-b border-slate-200 text-xs font-semibold text-slate-600 overflow-x-auto scrollbar-none whitespace-nowrap">
         {[
           { key: 'all', label: 'All Tickets', count: 128 },
           { key: 'open', label: 'Open', count: 24 },
@@ -196,44 +269,76 @@ export const SupportTicketsPage: React.FC = () => {
         {/* Left Section */}
         <div className="lg:col-span-7 xl:col-span-8 space-y-4">
           {/* Filter Bar */}
-          <div className="bg-white rounded-xl border border-[#E5EBF2] shadow-sm p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="bg-white rounded-xl border border-[#E5EBF2] shadow-sm p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs">
             <div className="relative flex-1 min-w-[200px]">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
               <input
                 type="text"
                 placeholder="Search tickets by subject, ticket ID, customer or keyword..."
-                className="w-full pl-8 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-8 pr-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-[#0362FA]"
               />
             </div>
 
-            <div className="flex items-center gap-1.5">
-              <select className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <select
+                value={departmentFilter}
+                onChange={(e) => setDepartmentFilter(e.target.value)}
+                className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700"
+              >
                 <option>All Departments</option>
-                <option>Calling</option>
-                <option>Billing</option>
+                <option>Account Access</option>
+                <option>Call Records</option>
+                <option>Integrations</option>
+                <option>User Management</option>
+                <option>Billing & Subscription</option>
+                <option>API & Webhooks</option>
+                <option>Campaigns</option>
+                <option>Templates</option>
+                <option>IVR & Numbers</option>
+                <option>Reports & Analytics</option>
               </select>
-              <select className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700">
+              <select
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
+                className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700"
+              >
                 <option>All Priority</option>
                 <option>High</option>
                 <option>Medium</option>
                 <option>Low</option>
               </select>
-              <select className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700"
+              >
                 <option>All Status</option>
                 <option>Open</option>
                 <option>In Progress</option>
+                <option>Resolved</option>
+                <option>Closed</option>
               </select>
-              <button className="flex items-center gap-1 px-3 py-1.5 bg-[#0362FA] text-white font-semibold rounded-lg">
-                <Filter className="w-3 h-3" />
-                <span>Filter</span>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setDepartmentFilter('All Departments');
+                  setPriorityFilter('All Priority');
+                  setStatusFilter('All Status');
+                  toast.info('Filters Reset', 'Displaying all support tickets');
+                }}
+                className="text-[#0362FA] font-semibold hover:underline px-1.5"
+              >
+                Reset
               </button>
             </div>
           </div>
 
-          {/* Table */}
+          {/* Table (Anti-Shrink) */}
           <div className="bg-white rounded-xl border border-[#E5EBF2] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+              <table className="w-full text-left border-collapse text-xs min-w-[850px] whitespace-nowrap">
                 <thead>
                   <tr className="bg-[#F8FAFC] text-slate-500 font-semibold border-b border-[#E5EBF2]">
                     <th className="py-2.5 px-2.5 w-6 text-slate-400">#</th>
@@ -250,10 +355,18 @@ export const SupportTicketsPage: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredTickets.map((t) => (
-                    <tr key={t.id} className="hover:bg-[#F0F7FF] transition-colors">
+                    <tr
+                      key={t.id}
+                      onClick={() => setSelectedTicketForDetail(t)}
+                      className="hover:bg-[#F0F7FF] transition-colors cursor-pointer group"
+                    >
                       <td className="py-2.5 px-2.5 text-slate-400 font-mono text-[11px]">{t.id}</td>
-                      <td className="py-2.5 px-3 font-semibold text-[#0362FA] font-mono">{t.ticketId}</td>
-                      <td className="py-2.5 px-3 font-semibold text-slate-900 max-w-[180px] truncate">{t.subject}</td>
+                      <td className="py-2.5 px-3 font-semibold text-[#0362FA] font-mono group-hover:underline">
+                        {t.ticketId}
+                      </td>
+                      <td className="py-2.5 px-3 font-semibold text-slate-900 max-w-[180px] truncate">
+                        {t.subject}
+                      </td>
                       <td className="py-2.5 px-3 text-slate-700">{t.customer}</td>
                       <td className="py-2.5 px-3 text-slate-600">{t.category}</td>
                       <td className="py-2.5 px-3">
@@ -289,10 +402,45 @@ export const SupportTicketsPage: React.FC = () => {
                         </div>
                       </td>
                       <td className="py-2.5 px-3 text-slate-400 text-[11px] whitespace-nowrap">{t.createdOn}</td>
-                      <td className="py-2.5 px-3 text-center">
-                        <button className="text-slate-400 hover:text-slate-700">
-                          <MoreHorizontal className="w-3.5 h-3.5" />
-                        </button>
+                      <td className="py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-center">
+                          <ActionMenu
+                            align="right"
+                            items={[
+                              {
+                                label: 'View Ticket Thread',
+                                icon: <MessageSquare className="w-3.5 h-3.5" />,
+                                onClick: () => setSelectedTicketForDetail(t),
+                              },
+                              {
+                                label: 'Reassign Agent',
+                                icon: <UserCheck className="w-3.5 h-3.5" />,
+                                onClick: () => setSelectedTicketForDetail(t),
+                              },
+                              {
+                                label: 'Mark as Resolved',
+                                icon: <CheckCircle2 className="w-3.5 h-3.5" />,
+                                onClick: () => {
+                                  setTickets((prev) =>
+                                    prev.map((item) => (item.id === t.id ? { ...item, status: 'Resolved' } : item))
+                                  );
+                                  toast.success('Ticket Resolved', `${t.ticketId} marked as resolved successfully.`);
+                                },
+                              },
+                              {
+                                label: 'Close Ticket',
+                                icon: <Trash2 className="w-3.5 h-3.5" />,
+                                danger: true,
+                                onClick: () => {
+                                  setTickets((prev) =>
+                                    prev.map((item) => (item.id === t.id ? { ...item, status: 'Closed' } : item))
+                                  );
+                                  toast.warning('Ticket Closed', `${t.ticketId} has been archived & closed.`);
+                                },
+                              },
+                            ]}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -362,25 +510,37 @@ export const SupportTicketsPage: React.FC = () => {
           <div className="bg-white rounded-xl border border-[#E5EBF2] shadow-sm p-4 space-y-3">
             <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Quick Actions</h3>
             <div className="grid grid-cols-4 gap-2 text-center text-xs">
-              <button className="p-2 bg-slate-50 hover:bg-slate-100 rounded-xl flex flex-col items-center gap-1 text-slate-700">
+              <button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="p-2 bg-slate-50 hover:bg-slate-100 rounded-xl flex flex-col items-center gap-1 text-slate-700 transition-colors"
+              >
                 <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#0362FA] flex items-center justify-center">
                   <Plus className="w-4 h-4" />
                 </div>
                 <span className="text-[10px] font-medium">Create Ticket</span>
               </button>
-              <button className="p-2 bg-slate-50 hover:bg-slate-100 rounded-xl flex flex-col items-center gap-1 text-slate-700">
+              <button
+                onClick={() => navigate('/knowledge-base')}
+                className="p-2 bg-slate-50 hover:bg-slate-100 rounded-xl flex flex-col items-center gap-1 text-slate-700 transition-colors"
+              >
                 <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#13AB4A] flex items-center justify-center">
                   <BookOpen className="w-4 h-4" />
                 </div>
                 <span className="text-[10px] font-medium">Knowledge Base</span>
               </button>
-              <button className="p-2 bg-slate-50 hover:bg-slate-100 rounded-xl flex flex-col items-center gap-1 text-slate-700">
+              <button
+                onClick={() => toast.info('FAQ Explorer', 'Browse top 40 frequently asked questions')}
+                className="p-2 bg-slate-50 hover:bg-slate-100 rounded-xl flex flex-col items-center gap-1 text-slate-700 transition-colors"
+              >
                 <div className="w-8 h-8 rounded-lg bg-amber-50 text-[#EF9612] flex items-center justify-center">
                   <HelpCircle className="w-4 h-4" />
                 </div>
                 <span className="text-[10px] font-medium">View FAQs</span>
               </button>
-              <button className="p-2 bg-slate-50 hover:bg-slate-100 rounded-xl flex flex-col items-center gap-1 text-slate-700">
+              <button
+                onClick={() => toast.success('Agent Hotline', 'Connecting to 24/7 priority enterprise support line...')}
+                className="p-2 bg-slate-50 hover:bg-slate-100 rounded-xl flex flex-col items-center gap-1 text-slate-700 transition-colors"
+              >
                 <div className="w-8 h-8 rounded-lg bg-purple-50 text-[#871CF4] flex items-center justify-center">
                   <Headphones className="w-4 h-4" />
                 </div>
@@ -396,37 +556,80 @@ export const SupportTicketsPage: React.FC = () => {
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-[10px] text-slate-400 block mb-0.5">Department</label>
-                  <select className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-slate-700">
+                  <select
+                    value={departmentFilter}
+                    onChange={(e) => setDepartmentFilter(e.target.value)}
+                    className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-slate-700"
+                  >
                     <option>All Departments</option>
+                    <option>Account Access</option>
+                    <option>Call Records</option>
+                    <option>Integrations</option>
+                    <option>User Management</option>
+                    <option>Billing & Subscription</option>
+                    <option>API & Webhooks</option>
+                    <option>Campaigns</option>
+                    <option>Templates</option>
+                    <option>IVR & Numbers</option>
+                    <option>Reports & Analytics</option>
                   </select>
                 </div>
                 <div>
                   <label className="text-[10px] text-slate-400 block mb-0.5">Priority</label>
-                  <select className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-slate-700">
+                  <select
+                    value={priorityFilter}
+                    onChange={(e) => setPriorityFilter(e.target.value)}
+                    className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-slate-700"
+                  >
                     <option>All Priority</option>
+                    <option>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label className="text-[10px] text-slate-400 block mb-0.5">Status</label>
-                <select className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-slate-700">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-slate-700"
+                >
                   <option>All Status</option>
+                  <option>Open</option>
+                  <option>In Progress</option>
+                  <option>Resolved</option>
+                  <option>Closed</option>
                 </select>
               </div>
 
               <div>
                 <label className="text-[10px] text-slate-400 block mb-0.5">Date Range</label>
-                <div className="px-2.5 py-1.5 border border-slate-200 rounded-lg text-slate-700 text-xs">
+                <div className="px-2.5 py-1.5 border border-slate-200 rounded-lg text-slate-700 text-xs bg-slate-50">
                   20 Oct 2026 - 20 Oct 2026
                 </div>
               </div>
 
               <div className="flex items-center gap-2 pt-2">
-                <button className="flex-1 py-1.5 bg-[#0362FA] hover:bg-blue-600 text-white font-semibold rounded-lg shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => toast.success('Filters Applied', `Showing ${filteredTickets.length} matching tickets.`)}
+                  className="flex-1 py-1.5 bg-[#0362FA] hover:bg-blue-600 text-white font-semibold rounded-lg shadow-sm transition-colors"
+                >
                   Apply Filters
                 </button>
-                <button className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchTerm('');
+                    setDepartmentFilter('All Departments');
+                    setPriorityFilter('All Priority');
+                    setStatusFilter('All Status');
+                    toast.info('Filters Reset', 'Reset all ticket criteria');
+                  }}
+                  className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors"
+                >
                   Reset
                 </button>
               </div>
@@ -466,6 +669,23 @@ export const SupportTicketsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Ticket Detail & Thread Modal */}
+      <TicketDetailModal
+        isOpen={!!selectedTicketForDetail}
+        ticket={selectedTicketForDetail}
+        onClose={() => setSelectedTicketForDetail(null)}
+        onStatusChange={(newStatus) => {
+          if (selectedTicketForDetail) {
+            setTickets((prev) =>
+              prev.map((item) =>
+                item.id === selectedTicketForDetail.id ? { ...item, status: newStatus as any } : item
+              )
+            );
+            setSelectedTicketForDetail((prev) => (prev ? { ...prev, status: newStatus as any } : null));
+          }
+        }}
+      />
     </div>
   );
 };

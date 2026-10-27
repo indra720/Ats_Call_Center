@@ -130,32 +130,32 @@ export const CallQueuePage: React.FC = () => {
           <span className="text-[11px] text-slate-400">Updates dynamically every 2 seconds</span>
         </div>
 
-        <div className="overflow-x-auto no-scrollbar scrollbar-none">
-          <table className="w-full text-left text-xs min-w-[750px]">
-            <thead className="bg-[#F8FAFD] text-[#64748B] uppercase text-[10px] font-bold border-b border-[#E5EBF2]">
+        <div className="overflow-x-auto" role="region" aria-label="Live Call Queue" tabIndex={0}>
+          <table className="w-full text-left text-xs min-w-[850px]">
+            <thead className="bg-[#F8FAFD] text-[#64748B] uppercase text-[10px] font-bold border-b border-[#E5EBF2] whitespace-nowrap">
               <tr>
-                <th className="px-3 py-2.5">Caller Name</th>
-                <th className="px-3 py-2.5">Phone Number</th>
-                <th className="px-3 py-2.5">Queue Name</th>
-                <th className="px-3 py-2.5">Wait Time</th>
-                <th className="px-3 py-2.5">Priority</th>
-                <th className="px-3 py-2.5">Routing Strategy</th>
-                <th className="px-3 py-2.5 text-center">Action</th>
+                <th className="px-3.5 py-3">Caller Name</th>
+                <th className="px-3.5 py-3">Phone Number</th>
+                <th className="px-3.5 py-3">Queue Name</th>
+                <th className="px-3.5 py-3">Wait Time</th>
+                <th className="px-3.5 py-3">Priority</th>
+                <th className="px-3.5 py-3">Routing Strategy</th>
+                <th className="px-3.5 py-3 text-center">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F1F5F9]">
               {waitingCallers.map((w) => (
-                <tr key={w.id} className="hover:bg-[#F8FAFD] transition-colors">
-                  <td className="px-3 py-2.5 font-bold text-[#0F172A]">{w.callerName}</td>
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-slate-700">{w.phoneNumber}</td>
-                  <td className="px-3 py-2.5 font-medium text-slate-800">{w.queue}</td>
-                  <td className="px-3 py-2.5 font-extrabold text-[#E73647] flex items-center gap-1">
+                <tr key={w.id} className="hover:bg-[#F8FAFD] transition-colors whitespace-nowrap">
+                  <td className="px-3.5 py-3 font-bold text-[#0F172A] whitespace-nowrap">{w.callerName}</td>
+                  <td className="px-3.5 py-3 font-mono text-[11px] text-slate-700 whitespace-nowrap">{w.phoneNumber}</td>
+                  <td className="px-3.5 py-3 font-medium text-slate-800 whitespace-nowrap">{w.queue}</td>
+                  <td className="px-3.5 py-3 font-extrabold text-[#E73647] flex items-center gap-1.5 whitespace-nowrap">
                     <Clock className="w-3.5 h-3.5" />
                     {w.waitDuration}
                   </td>
-                  <td className="px-3 py-2.5">
+                  <td className="px-3.5 py-3 whitespace-nowrap">
                     <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                         w.priority.includes('VIP')
                           ? 'bg-purple-50 text-purple-700 border border-purple-200'
                           : w.priority === 'High'
@@ -166,8 +166,8 @@ export const CallQueuePage: React.FC = () => {
                       {w.priority}
                     </span>
                   </td>
-                  <td className="px-3 py-2.5 text-slate-600">{w.assignedStrategy}</td>
-                  <td className="px-3 py-2.5 text-center">
+                  <td className="px-3.5 py-3 text-slate-600 whitespace-nowrap">{w.assignedStrategy}</td>
+                  <td className="px-3.5 py-3 text-center whitespace-nowrap">
                     <button
                       onClick={() =>
                         startCall({
@@ -176,7 +176,7 @@ export const CallQueuePage: React.FC = () => {
                           callType: 'inbound',
                         })
                       }
-                      className="px-3 py-1 bg-[#10B981] hover:bg-[#059669] text-white text-[11px] font-bold rounded-lg shadow-sm"
+                      className="px-3 py-1.5 bg-[#10B981] hover:bg-[#059669] text-white text-[11px] font-bold rounded-lg shadow-sm transition-colors cursor-pointer"
                     >
                       Pickup Call
                     </button>

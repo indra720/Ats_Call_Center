@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MoreVertical } from 'lucide-react';
+import { MoreVertical, Eye, Edit2, Copy, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface ActionMenuItem {
@@ -10,21 +10,39 @@ export interface ActionMenuItem {
   disabled?: boolean;
 }
 
-interface ActionMenuProps {
-  items: ActionMenuItem[];
+export interface ActionMenuProps {
+  items?: ActionMenuItem[];
   trigger?: React.ReactNode;
   align?: 'left' | 'right';
   className?: string;
+  onView?: () => void;
+  onEdit?: () => void;
+  onDuplicate?: () => void;
+  onDelete?: () => void;
 }
 
 export const ActionMenu: React.FC<ActionMenuProps> = ({
-  items,
+  items = [],
   trigger,
   align = 'right',
   className,
+  onView,
+  onEdit,
+  onDuplicate,
+  onDelete,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const resolvedItems: ActionMenuItem[] =
+    items && items.length > 0
+      ? items
+      : [
+          ...(onView ? [{ label: 'View Details', icon: Eye, onClick: onView }] : []),
+          ...(onEdit ? [{ label: 'Edit', icon: Edit2, onClick: onEdit }] : []),
+          ...(onDuplicate ? [{ label: 'Duplicate', icon: Copy, onClick: onDuplicate }] : []),
+          ...(onDelete ? [{ label: 'Delete', icon: Trash2, danger: true, onClick: onDelete }] : []),
+        ];
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -67,10 +85,20 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
 
   return (
     <div className={cn('relative inline-block text-left', className)} ref={menuRef}>
-      <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
+        className="cursor-pointer"
+      >
         {trigger || (
           <button
             type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(!isOpen);
+            }}
             className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors flex items-center justify-center"
             title="More Options"
           >
@@ -86,7 +114,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
             align === 'right' ? 'right-0' : 'left-0'
           )}
         >
-          {items.map((item, idx) => (
+          {(resolvedItems || []).map((item, idx) => (
             <button
               key={idx}
               type="button"

@@ -308,16 +308,16 @@ export const CallPerformanceReportPage: React.FC = () => {
             <a href="#/reports/agents" className="text-[11px] font-semibold text-[#0362FA] hover:underline">View All</a>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full min-w-[620px] text-left border-collapse text-xs whitespace-nowrap">
               <thead>
                 <tr className="border-b border-slate-100 text-slate-400 font-semibold text-[11px]">
-                  <th className="py-2 w-6">#</th>
-                  <th className="py-2">Agent Name</th>
-                  <th className="py-2">Total Calls</th>
-                  <th className="py-2">Answered</th>
-                  <th className="py-2">Missed</th>
-                  <th className="py-2">Avg Talk Time</th>
-                  <th className="py-2">Conversion</th>
+                  <th className="py-2.5 px-2 w-6">#</th>
+                  <th className="py-2.5 px-2">Agent Name</th>
+                  <th className="py-2.5 px-2">Total Calls</th>
+                  <th className="py-2.5 px-2">Answered</th>
+                  <th className="py-2.5 px-2">Missed</th>
+                  <th className="py-2.5 px-2">Avg Talk Time</th>
+                  <th className="py-2.5 px-2">Conversion</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-700">
@@ -328,19 +328,19 @@ export const CallPerformanceReportPage: React.FC = () => {
                   { id: 4, name: 'Priya Singh', calls: '986', answered: '812 (82%)', missed: '174 (18%)', talkTime: '3m 10s', conv: '12%', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=60&h=60&fit=crop' },
                   { id: 5, name: 'Neha Verma', calls: '842', answered: '694 (82%)', missed: '148 (18%)', talkTime: '2m 56s', conv: '11%', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&h=60&fit=crop' },
                 ].map((a) => (
-                  <tr key={a.id} className="hover:bg-slate-50">
-                    <td className="py-2 text-slate-400 font-mono text-[11px]">{a.id}</td>
-                    <td className="py-2">
+                  <tr key={a.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="py-2.5 px-2 text-slate-400 font-mono text-[11px]">{a.id}</td>
+                    <td className="py-2.5 px-2">
                       <div className="flex items-center gap-1.5">
                         <img src={a.avatar} alt={a.name} className="w-5 h-5 rounded-full object-cover" />
                         <span className="font-semibold text-slate-900">{a.name}</span>
                       </div>
                     </td>
-                    <td className="py-2 font-semibold text-slate-900">{a.calls}</td>
-                    <td className="py-2 text-[#13AB4A]">{a.answered}</td>
-                    <td className="py-2 text-[#E73647]">{a.missed}</td>
-                    <td className="py-2">{a.talkTime}</td>
-                    <td className="py-2 font-bold text-slate-900">{a.conv}</td>
+                    <td className="py-2.5 px-2 font-semibold text-slate-900">{a.calls}</td>
+                    <td className="py-2.5 px-2 text-[#13AB4A] font-medium">{a.answered}</td>
+                    <td className="py-2.5 px-2 text-[#E73647] font-medium">{a.missed}</td>
+                    <td className="py-2.5 px-2 text-slate-600">{a.talkTime}</td>
+                    <td className="py-2.5 px-2 font-bold text-slate-900">{a.conv}</td>
                   </tr>
                 ))}
               </tbody>
@@ -357,15 +357,15 @@ export const CallPerformanceReportPage: React.FC = () => {
             <a href="#/reports/campaigns" className="text-[11px] font-semibold text-[#0362FA] hover:underline">View All</a>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full min-w-[550px] text-left border-collapse text-xs whitespace-nowrap">
               <thead>
                 <tr className="border-b border-slate-100 text-slate-400 font-semibold text-[11px]">
-                  <th className="py-2 w-6">#</th>
-                  <th className="py-2">Campaign Name</th>
-                  <th className="py-2">Total Calls</th>
-                  <th className="py-2">Conversion</th>
-                  <th className="py-2">Revenue</th>
-                  <th className="py-2">Status</th>
+                  <th className="py-2.5 px-2 w-6">#</th>
+                  <th className="py-2.5 px-2">Campaign Name</th>
+                  <th className="py-2.5 px-2">Total Calls</th>
+                  <th className="py-2.5 px-2">Conversion</th>
+                  <th className="py-2.5 px-2">Revenue</th>
+                  <th className="py-2.5 px-2">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-700">
@@ -377,13 +377,13 @@ export const CallPerformanceReportPage: React.FC = () => {
                   { id: 5, name: 'Feedback & Survey', calls: '1,086', conv: '12%', rev: '₹1,28,000', status: 'Completed' },
                   { id: 6, name: 'Upsell Campaign', calls: '972', conv: '11%', rev: '₹1,05,000', status: 'Active' },
                 ].map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50">
-                    <td className="py-2 text-slate-400 font-mono text-[11px]">{c.id}</td>
-                    <td className="py-2 font-semibold text-slate-900">{c.name}</td>
-                    <td className="py-2">{c.calls}</td>
-                    <td className="py-2 font-bold text-slate-900">{c.conv}</td>
-                    <td className="py-2 font-semibold text-slate-900">{c.rev}</td>
-                    <td className="py-2">
+                  <tr key={c.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="py-2.5 px-2 text-slate-400 font-mono text-[11px]">{c.id}</td>
+                    <td className="py-2.5 px-2 font-semibold text-slate-900">{c.name}</td>
+                    <td className="py-2.5 px-2 text-slate-600">{c.calls}</td>
+                    <td className="py-2.5 px-2 font-bold text-slate-900">{c.conv}</td>
+                    <td className="py-2.5 px-2 font-semibold text-slate-900">{c.rev}</td>
+                    <td className="py-2.5 px-2">
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                         c.status === 'Active' ? 'bg-[#E9F9EE] text-[#13AB4A]' : 'bg-purple-50 text-purple-700'
                       }`}>
